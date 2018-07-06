@@ -1,0 +1,60 @@
+# your code goes here
+
+def get_input_from_console():
+    num_cases = int(input())
+    tuple_strings = []
+    code_strings = []
+    for i in range(num_cases):
+        num_tuples = int(input())
+        tuple_string = input()
+        code_string = input()
+        tuple_strings.append(tuple_string)
+        code_strings.append(code_string)
+        if (i < num_cases - 1):
+            blank = input()
+    tuple_strings = list(map(
+        lambda s: s.split(),
+        tuple_strings
+    ))
+    return [(tuple_strings[i], code_strings[i]) for i in range(len(tuple_strings)) if i < len(code_strings)]
+
+def get_nums_from_tuple(t):
+    a = 0
+    b = 0
+    for i in range(len(t)):
+        mask_a = 1 << i
+        shift_b = (i + 3) % 6
+        mask_b = 1 << shift_b
+        a |= (mask_a & ord(t[i]))
+        b |= ((mask_b & ord(t[i])) >> 3 if i + 3 < 6 else (mask_b & ord(t[i])) << 3)
+    return [a, b]
+
+def decode(input_data):
+    decrypts = []
+    for pair in input_data:
+        ans = ''
+        for t in pair[0]:
+            nums = get_nums_from_tuple(t)
+            ans += (pair[1][nums[0]] + pair[1][nums[1]])
+        decrypts.append(ans)
+    return decrypts
+
+input_data = get_input_from_console()
+decrypts = decode(input_data)
+for decrypt in decrypts:
+    print(decrypt)
+
+
+## The following can be used for testing / debugging:
+
+def getInputFromFile(filename):
+    stream = open(filename, 'r')
+    lines = stream.readlines()
+
+    tuple_strings = lines[2::4] if int(lines[0]) > 0 else []
+    tuple_strings = list(map(
+        lambda s: s.split(),
+        tuple_strings
+    ))
+    code_strings = lines[3::4] if int(lines[0]) > 0 else []
+    return [(tuple_strings[i], code_strings[i]) for i in range(len(tuple_strings)) if i < len(code_strings)]
